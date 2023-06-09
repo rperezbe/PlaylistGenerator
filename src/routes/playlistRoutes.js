@@ -6,7 +6,7 @@ const playlistController = require('../controllers/playlistController');
 router.post('/', playlistController.createPlaylist);
 
 // Ruta para obtener una playlist específica
-//router.get('/playlist/:id', playlistController.getPlaylistById);
+router.get('/:id', playlistController.getPlaylistById);
 
 // Otras rutas relacionadas con playlists...
 
