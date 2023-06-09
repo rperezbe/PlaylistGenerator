@@ -13,10 +13,9 @@ function showRegister() {
   function register() {
     const username = document.getElementById('new-username').value;
     const password = document.getElementById('new-password').value;
-    const email = ''; 
-    const age = 0; 
-    const musicPreferences = [];
-  
+    const email = 'fjuan@campus.eug.es'; 
+    const age = 23; 
+    const musicPreferences = ["rock", "pop", "indie"];
     // Crear el objeto con los datos del usuario
     const newUser = {
       username,
@@ -26,16 +25,17 @@ function showRegister() {
       musicPreferences
     };
   
-    // Realizar la solicitud POST al backend para crear un usuario
-    axios.post('/users', newUser)
-      .then(response => {
-        // Manejar la respuesta del backend
-        console.log(response.data);
-        // SI SE REGISTRA BIEN VAMOS AL INDEX NO??
-      })
-      .catch(error => {
-        // Manejar el error en caso de que ocurra
-        console.error(error);
-      });
+  // Realizar la solicitud POST al backend para crear un usuario
+  axios.post('http://localhost:3000/users', newUser)
+  .then(response => {
+    // Manejar la respuesta del backend
+    console.log(response.data);
+    // Redireccionar o realizar otras acciones después del registro
+  })
+  .catch(error => {
+    // Manejar el error en caso de que ocurra
+    console.error(error);
+  });
+
   }
   
