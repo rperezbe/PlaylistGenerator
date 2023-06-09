@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PlaylistGenerator</title>
+</head>
+<body>
+  <div id="login">
+    <h2>Iniciar sesión</h2>
+    <input type="text" id="username" placeholder="Nombre de usuario">
+    <input type="password" id="password" placeholder="Contraseña">
+    <button onclick="login()">Iniciar sesión</button>  
+    <p>¿No tienes una cuenta? <a href="#" onclick="showRegister()">Crear una cuenta</a></p>
+  </div>
+
+  <div id="registro" style="display: none;">
+    <h2>Registro</h2>
+    <input type="text" id="new-username" placeholder="Nombre de usuario">
+    <input type="password" id="new-password" placeholder="Contraseña">
+    <button onclick="register()">Registrarse</button>
+    <p>¿Ya tienes una cuenta? <a href="#" onclick="showLogin()">Iniciar sesión</a></p>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
