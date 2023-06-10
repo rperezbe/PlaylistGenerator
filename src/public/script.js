@@ -13,9 +13,9 @@ function showRegister() {
   function register() {
     const username = document.getElementById('new-username').value;
     const password = document.getElementById('new-password').value;
-    const email = 'fjuan@campus.eug.es'; 
-    const age = 23; 
-    const musicPreferences = ["rock", "pop", "indie"];
+    const email = document.getElementById('email').value; // Obtener el valor del campo de correo electrónico
+    const age = document.getElementById('age').value; // Obtener el valor del campo de edad
+    const musicPreferences = Array.from(document.querySelectorAll('input[name="musicPreferences"]:checked')).map(input => input.value);
     // Crear el objeto con los datos del usuario
     const newUser = {
       username,

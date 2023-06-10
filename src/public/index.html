@@ -21,6 +21,39 @@
       <h2>Registro</h2>
       <input type="text" id="new-username" placeholder="Nombre de usuario">
       <input type="password" id="new-password" placeholder="Contraseña">
+      <input type="text" id="email" placeholder="Correo electrónico"> <!-- Nuevo campo: Correo electrónico -->
+      <input type="text" id="age" placeholder="Edad"> <!-- Nuevo campo: Edad -->
+      <p>Preferencias musicales:</p>
+      <div class="checkbox-columns">
+        <div>
+          <label><input type="checkbox" name="musicPreferences" value="rock"> Rock</label>
+          <label><input type="checkbox" name="musicPreferences" value="pop"> Pop</label>
+          <label><input type="checkbox" name="musicPreferences" value="rap"> Rap</label>
+          <label><input type="checkbox" name="musicPreferences" value="metal"> Metal</label>
+          <label><input type="checkbox" name="musicPreferences" value="electrónica"> Electrónica</label>
+        </div>
+        <div>
+          <label><input type="checkbox" name="musicPreferences" value="reggaeton"> Reggaeton</label>
+          <label><input type="checkbox" name="musicPreferences" value="jazz"> Jazz</label>
+          <label><input type="checkbox" name="musicPreferences" value="country"> Country</label>
+          <label><input type="checkbox" name="musicPreferences" value="indie"> Indie</label>
+          <label><input type="checkbox" name="musicPreferences" value="folk"> Folk</label>
+        </div>
+        <div>
+          <label><input type="checkbox" name="musicPreferences" value="blues"> Blues</label>
+          <label><input type="checkbox" name="musicPreferences" value="soul"> Soul</label>
+          <label><input type="checkbox" name="musicPreferences" value="funk"> Funk</label>
+          <label><input type="checkbox" name="musicPreferences" value="disco"> Disco</label>
+          <label><input type="checkbox" name="musicPreferences" value="classical"> Clásica</label>
+        </div>
+        <div>
+          <label><input type="checkbox" name="musicPreferences" value="reggae"> Reggae</label>
+          <label><input type="checkbox" name="musicPreferences" value="punk"> Punk</label>
+          <label><input type="checkbox" name="musicPreferences" value="alternative"> Alternativa</label>
+          <label><input type="checkbox" name="musicPreferences" value="rnb"> R&B</label>
+          <!-- Add more genres here -->
+        </div>
+      </div>
       <button onclick="register()">Registrarse</button>
       <p>¿Ya tienes una cuenta? <a href="#" onclick="showLogin()">Iniciar sesión</a></p>
     </div>
