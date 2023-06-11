@@ -8,7 +8,29 @@ function showRegister() {
     document.getElementById('login').style.display = 'block';
   }
 
-  function login() {}
+  function login() {
+    const username = document.getElementById('username').value; // Obtener el valor del campo de nombre de usuario
+    const password = document.getElementById('password').value; // Obtener el valor del campo de contraseña
+  
+    // Crear el objeto con los datos del usuario
+    const user = {
+      username,
+      password
+    };
+  
+    // Realizar la solicitud POST al backend para iniciar sesión
+    axios.post('http://localhost:3000/users/login', user)
+      .then(response => {
+        // Manejar la respuesta del backend
+        console.log(response.data);
+        // Redireccionar a la página home.html u otras acciones después del inicio de sesión exitoso
+        window.location.href = 'home.html';
+      })
+      .catch(error => {
+        // Manejar el error en caso de que ocurra
+        console.error(error);
+      });
+  }
   
   function register() {
     const username = document.getElementById('new-username').value;
@@ -31,6 +53,7 @@ function showRegister() {
     // Manejar la respuesta del backend
     console.log(response.data);
     // Redireccionar o realizar otras acciones después del registro
+    window.location.href = 'home.html';
   })
   .catch(error => {
     // Manejar el error en caso de que ocurra
