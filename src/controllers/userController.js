@@ -48,9 +48,9 @@ const getUserById = (req, res) => {
 };
 
 const loginUser = (req, res) => {
-  const email = req.body.email;
+  const username = req.body.username;
   const password = req.body.password;
-  User.findOne({ email })
+  User.findOne({ username })
     .then((user) => {
       if (!user) {
         return res.status(404).json({ error: 'Usuario no encontrado' });
