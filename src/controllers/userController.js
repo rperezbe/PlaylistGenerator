@@ -10,25 +10,49 @@ const createUser = (req, res) => {
     musicPreferences: req.body.musicPreferences
   });
 
-  bcrypt.hash(req.body.password, 10)
-  .then(hash => {
-    newUser.password = hash; // asigna el hash de la contraseña al campo 'password'
-    // guarda en la bbdd el user
-    newUser.save()
-      .then(() => {
-        console.log('Usuario guardado en la base de datos');
-        res.status(201).json({ message: 'Usuario creado correctamente' });
-      })
-      .catch((err) => {
-        console.error('Error al guardar el usuario:', err);
-        res.status(500).json({ error: 'Error al guardar el usuario' });
-      });
-  })
-  .catch(err => {
-    console.error('Error al generar el hash de la contraseña:', err);
-    res.status(500).json({ error: 'Error al guardar el usuario' });
-  });
+  //verificar que el usuario no existe
+  User.findOne({ username: newUser.username })
+    .then((existingUser) => {
+      if (existingUser) {
+        return res.status(400).json({ error: 'El usuario ya existe' });
+      }
+      //verificar que el correo electrónico no existe
+      User.findOne({ email: newUser.email })
+        .then((existingEmail) => {
+          if (existingEmail) {
+            return res.status(400).json({ error: 'El correo electrónico ya existe' });
+          }
+          // Encriptar la contraseña
+          bcrypt.hash(newUser.password, 10)
+            .then((hash) => {
+              newUser.password = hash;
+              // Guardar el usuario en la base de datos
+              newUser.save()
+                .then(() => {
+                  console.log('Usuario guardado en la base de datos');
+                  res.status(201).json({ message: 'Usuario creado correctamente' });
+                })
+                .catch((err) => {
+                  console.error('Error al guardar el usuario:', err);
+                  res.status(500).json({ error: 'Error al guardar el usuario' });
+                });
+            })
+            .catch((err) => {
+              console.error('Error al generar el hash de la contraseña:', err);
+              res.status(500).json({ error: 'Error al guardar el usuario' });
+            });
+        })
+        .catch((err) => {
+          console.error('Error al verificar el correo electrónico:', err);
+          res.status(500).json({ error: 'Error al verificar el correo electrónico' });
+        });
+    })
+    .catch((err) => {
+      console.error('Error al verificar el usuario:', err);
+      res.status(500).json({ error: 'Error al verificar el usuario' });
+    });
 };
+
 
 const getUserById = (req, res) => {
   const userId = req.params.id;
