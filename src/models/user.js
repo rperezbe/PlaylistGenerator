@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema({
   }
 });
 
-// Crea el modelo 'Usuario' a partir del esquema
+// Crea el modelo 'Usuario' a partir del esquema con mongoose
 const User = mongoose.model('User', userSchema);
 
 // Exporta el modelo para su uso en otros archivos
