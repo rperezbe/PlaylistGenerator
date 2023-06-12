@@ -5,8 +5,8 @@ const userRoutes = require('./routes/userRoutes');
 const cors = require('cors'); //para que no haya problemas de cors
 require('./database');
 
-app.use(express.json());
 //middlewares
+app.use(express.json());
 app.use(cors());
 
 // Rutas de usuarios
