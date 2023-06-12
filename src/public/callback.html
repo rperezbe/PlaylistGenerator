@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Callback</title>
+</head>
+<body>
+  <script>
+const accessTokenKey = 'spotify_access_token'; // Clave para almacenar el token de acceso en el almacenamiento local
+
+// Función para redirigir a la página de inicio (home.html)
+function redirectToHome() {
+  var homeUrl = 'home.html';
+  window.location.href = homeUrl;
+}
+
+// Obtiene el código de autorización de la URL
+var queryParams = new URLSearchParams(window.location.search);
+var code = queryParams.get('code');
+
+// Realiza una solicitud AJAX o Fetch para intercambiar el código de autorización por un token de acceso válido
+// ...
+
+// Ejemplo de solicitud Fetch para intercambiar el código de autorización por un token de acceso
+var tokenUrl = 'https://accounts.spotify.com/api/token';
+var clientId = 'd7cdacc29b064ae5984e5ca69d5f42e9';
+var clientSecret = '567a2ba4f0c843faad2fdb94b7d375e9';
+var redirectUri = 'http://127.0.0.1:5500/PlaylistGenerator/src/public/callback.html'; // URL de redireccionamiento de tu aplicación
+var authHeader = btoa(clientId + ':' + clientSecret);
+
+fetch(tokenUrl, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Authorization': 'Basic ' + authHeader
+  },
+  body: 'grant_type=authorization_code&code=' + code + '&redirect_uri=' + encodeURIComponent(redirectUri)
+})
+  .then(response => response.json())
+  .then(data => {
+    var accessToken = data.access_token;
+
+    // Almacena el token de acceso en el almacenamiento local
+    localStorage.setItem(accessTokenKey, accessToken);
+
+    // Redirige a la página de inicio (home.html)
+    // Para obtener un nuevo token de acceso con mayor grado de autorización, simplemente redirige a una nueva página que maneje el proceso
+    redirectToHome();
+  })
+  .catch(error => {
+    console.error('Error al intercambiar el código de autorización:', error);
+  });
+  </script>
+</body>
+</html>
+
