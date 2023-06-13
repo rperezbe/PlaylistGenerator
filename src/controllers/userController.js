@@ -31,7 +31,7 @@ const createUser = (req, res) => {
                 .then(() => {
                   console.log('Usuario guardado en la base de datos');
                   req.session.user = newUser; //guardamos el nuevo usuario en la sesión
-                  console.log(req.session.user);
+                  //console.log(req.session.user);
                   res.status(201).json({ message: 'Usuario creado correctamente' });
                 })
                 .catch((err) => {
@@ -96,8 +96,8 @@ const loginUser = (req, res) => {
           if (isMatch) {
             //la contraseña coincide, el inicio de sesión es exitoso
             req.session.user = user; //guardamos el usuario en la sesión
-            console.log(req.session.user);
-            return res.status(200).json({ message: 'Inicio de sesión exitoso' });
+            //console.log(req.session.user);
+            return res.status(200).json({ message: 'Inicio de sesión exitoso', user: user});
           } else {
             //la contraseña no coincide, el inicio de sesión falla
             return res.status(401).json({ error: 'Contraseña incorrecta' });
