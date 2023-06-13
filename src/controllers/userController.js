@@ -30,6 +30,8 @@ const createUser = (req, res) => {
               newUser.save()
                 .then(() => {
                   console.log('Usuario guardado en la base de datos');
+                  req.session.user = newUser; //guardamos el nuevo usuario en la sesión
+                  console.log(req.session.user);
                   res.status(201).json({ message: 'Usuario creado correctamente' });
                 })
                 .catch((err) => {
@@ -57,19 +59,28 @@ const createUser = (req, res) => {
 const getUserById = (req, res) => {
   const userId = req.params.id;
 
-  User.findById(userId)
-    .then((user) => {
-      if (user) {
-        res.status(200).json(user);
-      } else {
-        res.status(404).json({ error: 'Usuario no encontrado' });
-      }
-    })
-    .catch((err) => {
-      console.error('Error al obtener el usuario:', err);
-      res.status(500).json({ error: 'Error al obtener el usuario' });
-    });
+  if (req.session.user) {
+    if (req.session.user._id.toString() === userId) {
+      User.findById(userId)
+        .then((user) => {
+          if (user) {
+            res.status(200).json(user);
+          } else {
+            res.status(404).json({ error: 'Usuario no encontrado' });
+          }
+        })
+        .catch((err) => {
+          console.error('Error al obtener el usuario:', err);
+          res.status(500).json({ error: 'Error al obtener el usuario' });
+        });
+    } else {
+      res.status(401).json({ error: 'Acceso no autorizado' });
+    }
+  } else {
+    res.status(401).json({ error: 'Acceso no autorizado' });
+  }
 };
+
 
 const loginUser = (req, res) => {
   const username = req.body.username;
@@ -84,6 +95,8 @@ const loginUser = (req, res) => {
         .then((isMatch) => {
           if (isMatch) {
             //la contraseña coincide, el inicio de sesión es exitoso
+            req.session.user = user; //guardamos el usuario en la sesión
+            console.log(req.session.user);
             return res.status(200).json({ message: 'Inicio de sesión exitoso' });
           } else {
             //la contraseña no coincide, el inicio de sesión falla
@@ -101,8 +114,21 @@ const loginUser = (req, res) => {
     });
 };
 
+const logoutUser = (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Error al cerrar la sesión:', err);
+      return res.status(500).json({ error: 'Error al cerrar la sesión' });
+    }
+    res.clearCookie('connect.sid');
+    res.status(200).json({ message: 'Sesión cerrada correctamente' });
+  });
+};
+
+
 module.exports = {
   createUser,
   getUserById,
-  loginUser
+  loginUser,
+  logoutUser
 };
