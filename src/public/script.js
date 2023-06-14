@@ -21,9 +21,12 @@ function showRegister() {
     // Realizar la solicitud POST al backend para iniciar sesión
     axios.post('http://localhost:3000/users/login', user)
       .then(response => {
-        // Manejar la respuesta del backend
-        console.log(response.data);
-        // Redireccionar a la página home.html u otras acciones después del inicio de sesión exitoso
+        //console.log(response.data.user);
+        //obtener los datos del usuario almacenados en la variable de sesión
+        const user = response.data.user;
+        //guardar los datos del usuario en el localStorage
+        localStorage.setItem('user', JSON.stringify(user));
+        //redireccionar a la página home.html
         window.location.href = 'home.html';
       })
       .catch(error => {

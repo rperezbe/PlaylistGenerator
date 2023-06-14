@@ -63,15 +63,117 @@ button:hover {
   background-color: #4caf50;
 }
   </style>
+  <script>
+    // Verificar la existencia de la sesión en el almacenamiento local
+    if (!localStorage.getItem('user')) {
+      // No hay sesión o falta información, redirigir a la página de inicio de sesión
+      window.location.href = 'index.html';
+    }
+  </script>
 </head>
 <body>
-  <img id="logo" src="logo.jpg" alt="logo">
+<img id="logo" src="logo.jpg" alt="logo">
   <div id="container">
+    <h1 id="saludo"></h1>
     <h1>Playlists Generadas</h1>
     <div id="playlists"></div>
     <button id="refresh_button">Recargar token</button>
+    <button id="logoutBtn">Logout</button>
   </div>
-  <script src="home_script.js"></script>
+  <script>
+    //mostrar los datos del usuario en la página
+    const user = JSON.parse(localStorage.getItem('user'));
+    //console.log(user);
+    document.getElementById('saludo').innerHTML = `Hola ${user.username}!`;
+    const clientId = 'd7cdacc29b064ae5984e5ca69d5f42e9';
+    const clientSecret = '567a2ba4f0c843faad2fdb94b7d375e9';
+    //const genreSeeds = userGenres || ['rock', 'pop', 'hip-hop', 'metal', 'jazz', 'reggaeton']; por si no se seleccionan géneros
+    const genreSeeds = user.musicPreferences;
+
+    function generatePlaylists() {
+      fetchAccessToken()
+        .then(access_token => {
+          const playlistPromises = genreSeeds.map(genre => generatePlaylist(access_token, genre));
+          Promise.all(playlistPromises)
+            .then(playlists => {
+              const playlistsContainer = document.getElementById('playlists');
+              playlists.forEach(playlist => {
+                const playlistElement = document.createElement('div');
+                playlistElement.className = 'playlist-item';
+                playlistElement.innerHTML = `
+                  <p>${playlist.name}</p>
+                  <iframe src="https://open.spotify.com/embed/track/${playlist.trackId}" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                `;
+                playlistsContainer.appendChild(playlistElement);
+              });
+            })
+            .catch(error => {
+              console.error('Error al obtener las playlists:', error);
+            });
+        })
+        .catch(error => {
+          console.error('Error al obtener el access token:', error);
+        });
+    }
+
+    function fetchAccessToken() {
+      const url = 'https://accounts.spotify.com/api/token';
+      const data = new URLSearchParams();
+      data.append('grant_type', 'client_credentials');
+
+      return fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': 'Basic ' + btoa(clientId + ':' + clientSecret)
+        },
+        body: data
+      })
+        .then(response => response.json())
+        .then(data => data.access_token);
+    }
+
+    function generatePlaylist(access_token, genre) {
+      const url = `https://api.spotify.com/v1/recommendations?limit=1&seed_genres=${genre}`;
+      const headers = {
+        'Authorization': 'Bearer ' + access_token
+      };
+
+      return fetch(url, {
+        headers: headers
+      })
+        .then(response => response.json())
+        .then(data => {
+          const track = data.tracks[0];
+          return {
+            name: `Canción de ${genre}`,
+            trackId: track.id
+          };
+        });
+    }
+    generatePlaylists();
+
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+
+    function logout() {
+      // Realizar una solicitud POST a la función /logout en el backend
+      fetch('http://localhost:3000/users/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response => {
+            // Borrar la información de la sesión en localStorage
+            localStorage.removeItem('user');
+            // Redireccionar a la página de inicio de sesión u otra página después del logout exitoso
+            window.location.href = 'index.html';
+        })
+        .catch(error => {
+          console.error('Error al realizar el logout:', error);
+        });
+    }
+  </script>
 </body>
 </html>
 

@@ -11,4 +11,7 @@ router.get('/:id', userController.getUserById);
 //ruta para iniciar sesión
 router.post('/login', userController.loginUser);
 
+// Ruta para el logout
+router.post('/logout', userController.logoutUser);
+
 module.exports = router;
