@@ -48,6 +48,20 @@
     .playlist-item iframe {
       border: none;
     }
+    button {
+  background-color: #96BC33;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+button:hover {
+  background-color: #4caf50;
+}
   </style>
 </head>
 <body>
@@ -55,6 +69,7 @@
   <div id="container">
     <h1>Playlists Generadas</h1>
     <div id="playlists"></div>
+    <button id="refresh_button">Recargar token</button>
   </div>
   <script src="home_script.js"></script>
 </body>
