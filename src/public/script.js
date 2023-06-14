@@ -50,15 +50,12 @@ function showRegister() {
       musicPreferences
     };
   
- // Realizar la solicitud POST al backend para iniciar sesión
- axios.post('http://localhost:3000/users/login', user)
+  // Realizar la solicitud POST al backend para crear un usuario
+  axios.post('http://localhost:3000/users', newUser)
   .then(response => {
-    //console.log(response.data.user);
-    //obtener los datos del usuario almacenados en la variable de sesión
-    const user = response.data.user;
-    //guardar los datos del usuario en el localStorage
-    localStorage.setItem('user', JSON.stringify(user));
-    //redireccionar a la página home.html
+    // Manejar la respuesta del backend
+    console.log(response.data);
+    // Redireccionar o realizar otras acciones después del registro
     window.location.href = 'home.html';
   })
   .catch(error => {
@@ -67,4 +64,3 @@ function showRegister() {
   });
 
   }
-  
