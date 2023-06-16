@@ -130,6 +130,25 @@ const logoutUser = (req, res) => {
 //update de valores del usuario
 
 //delete de usuario (solamente si eres admin)
+const deleteUser = (req, res) => {
+  if (req.session.user && req.session.user.isAdmin) {
+    const userId = req.params.id;
+    User.findByIdAndRemove(userId)
+      .then((user) => {
+        if (user) {
+          res.status(200).json({ message: 'Usuario eliminado correctamente' });
+        } else {
+          res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+      })
+      .catch((err) => {
+        console.error('Error al eliminar el usuario:', err);
+        res.status(500).json({ error: 'Error al eliminar el usuario' });
+      });
+  } else {
+    res.status(401).json({ error: 'Acceso no autorizado' });
+  }
+};
 
 //mostramos todos los usuarios (solamente si eres admin)
 const getAllUsers = (req, res) => {
@@ -152,5 +171,6 @@ module.exports = {
   getUserById,
   loginUser,
   logoutUser,
-  getAllUsers
+  getAllUsers,
+  deleteUser
 };
