@@ -1,103 +1,142 @@
+<!DOCTYPE html>
+<html>
 <head>
-  <title>Spotify Recommendations</title>
+  <title>Spotify Stats</title>
   <style>
-   * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-body {
-  background-color: #96BC33;
-  font-family: Arial, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
+    body {
+      background-color: #96BC33;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
 
-#container {
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  text-align: center;
-}
+    #container {
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
 
-h1 {
-  font-size: 24px;
-  margin-bottom: 20px;
-}
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
 
-.grid-container {
-  display: grid;
-  grid-gap: 10px;
-  justify-items: center;
-  align-items: center;
-}
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-gap: 10px;
+      justify-items: center;
+      align-items: center;
+    }
 
-.grid-item {
-  position: relative;
-  overflow: hidden;
-  width: 200px;
-  height: 260px;
-  border-radius: 10px;
-  transition: filter 0.3s ease;
-}
+    .grid-item {
+      position: relative;
+      overflow: hidden;
+      width: 200px;
+      height: 200px;
+      border-radius: 10px;
+      transition: filter 0.3s ease;
+    }
 
-.grid-item iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
+    .grid-item img {
+      filter: brightness(70%);
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-.grid-item .track-name {
-  color: #fff;
-  font-family: 'Barlow', 'Open Sans', 'Lucida Grande', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 18px;
-  margin: 10px 0;
-  text-align: center;
-  text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
-}
+    .grid-item .track-name {
+      color: #fff;
+      font-family: 'Barlow', 'Open Sans', 'Lucida Grande', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 18px;
+      margin: 0;
+      position: absolute;
+      bottom: 15px;
+      left: 15px;
+      right: 15px;
+      text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+    }
 
-button {
-  background-color: #96BC33;
-  color: #fff;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-  margin-bottom: 10px;
-  align-self: center;
-}
+    button {
+      background-color: #96BC33;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
 
-button:hover {
-  background-color: #4caf50;
-}
+    button:hover {
+      background-color: #4caf50;
+    }
   </style>
 </head>
 <body>
   <div id="container">
-    <h1>Spotify Track Recommendations</h1>
-    <div class="checkbox-columns">
-      <p>Selecciona el número de canciones:</p>
-      <input type="number" id="num-songs" min="1" max="100">
-    </div>
-    <div class="grid-container" id="recommendations-grid"></div>
-    <button class="save-button">Guardar en Spotify</button>
+    <h1>Tus canciones más escuchadas</h1>
+    <div class="grid-container" id="tracks-grid"></div>
   </div>
 
   <script>
-    const accessToken = localStorage.getItem('spotify_access_token');
-    console.log('Access token:', accessToken);
-    const refreshToken = localStorage.getItem('spotify_refresh_token');
-    console.log('Refresh token:', refreshToken);
 
-    function getTrackRecommendations(limit) {
-      const url = `https://api.spotify.com/v1/recommendations?limit=${limit}&seed_artists=2YZyLoL8N0Wb9xBt1NhZWg%2C5K4W6rqBFWDnAN6FQUkS6x%2C2h93pZq0e7k5yf4dywlkpM&seed_genres=hip-hop&seed_tracks=7fBv7CLKzipRk6EC6TWHOB`;
+    const clientId = 'd7cdacc29b064ae5984e5ca69d5f42e9'; // Client ID
+    const clientSecret = '567a2ba4f0c843faad2fdb94b7d375e9'; // Client Secret
+
+  
+    function fetchAccessToken() {
+      const url = 'https://accounts.spotify.com/api/token';
+      const data = new URLSearchParams();
+      data.append('grant_type', 'client_credentials');
+
+      return fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': 'Basic ' + btoa(clientId + ':' + clientSecret)
+        },
+        body: data
+      })
+        .then(response => response.json())
+        .then(data => data.access_token);
+    }
+
+    function getTopTracks() {
+      const accessToken = localStorage.getItem('spotify_access_token');
+      console.log('Access token:', accessToken);
+
+      if (!accessToken) {
+        return fetchAccessToken()
+          .then(token => {
+            localStorage.setItem('spotify_access_token', token);
+            return token;
+          })
+          .then(fetchTopTracks);
+      } else {
+        return fetchTopTracks(accessToken)
+          .catch(error => {
+            console.error('Error getting top tracks:', error);
+            return refreshAccessToken()
+              .then(fetchTopTracks);
+          });
+      }
+    }
+
+    function fetchTopTracks(accessToken) {
+      const url = 'https://api.spotify.com/v1/me/top/tracks?time_range=long_term&limit=9';
       const headers = {
         'Authorization': 'Bearer ' + accessToken
       };
@@ -105,76 +144,45 @@ button:hover {
       return fetch(url, {
         headers: headers
       })
-        .then(response => response.json())
-        .then(data => data.tracks);
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error('Failed to fetch top tracks');
+          }
+        })
+        .then(data => data.items);
     }
 
-    function displayRecommendations(tracks) {
-      const gridContainer = document.getElementById('recommendations-grid');
-      gridContainer.innerHTML = '';
+    function displayTracks(tracks) {
+      const gridContainer = document.getElementById('tracks-grid');
 
-      const columns = getGridColumns(tracks.length);
-      gridContainer.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
-
-      tracks.slice(0, 30).forEach(track => {
+      tracks.forEach(track => {
         const gridItem = document.createElement('div');
         gridItem.className = 'grid-item';
 
-        const iframe = document.createElement('iframe');
-        iframe.src = `https://open.spotify.com/embed/track/${track.id}`;
-        iframe.frameborder = '0';
-        iframe.allowtransparency = 'true';
-        iframe.allow = 'encrypted-media';
+        const image = document.createElement('img');
+        image.src = track.album.images[0].url;
 
         const trackName = document.createElement('p');
         trackName.className = 'track-name';
         trackName.textContent = track.name;
 
-        gridItem.appendChild(iframe);
+        gridItem.appendChild(image);
         gridItem.appendChild(trackName);
         gridContainer.appendChild(gridItem);
       });
-
     }
 
-    function getGridColumns(numSongs) {
-      if (numSongs <= 10) {
-        return 5;
-      } else if (numSongs <= 20) {
-        return 7;
-      } else {
-        return 10;
-      }
-    }
-
-    const numSongsInput = document.getElementById('num-songs');
-    numSongsInput.addEventListener('change', () => {
-      const numSongs = parseInt(numSongsInput.value, 10);
-      if (numSongs > 0 && numSongs <= 100) {
-        getTrackRecommendations(numSongs)
-          .then(tracks => {
-            displayRecommendations(tracks);
-          })
-          .catch(error => {
-            console.error('Error getting track recommendations:', error);
-            refreshAccessToken(refreshToken);
-          });
-      }
-    });
-
-    getTrackRecommendations(10)
+    getTopTracks()
       .then(tracks => {
-        displayRecommendations(tracks);
-      })
-      .catch(error => {
-        console.error('Error getting track recommendations:', error);
-        refreshAccessToken(refreshToken);
+        displayTracks(tracks);
       });
 
-    const clientId = 'd7cdacc29b064ae5984e5ca69d5f42e9'; // Client ID
-    const clientSecret = '567a2ba4f0c843faad2fdb94b7d375e9'; // Client Secret
+    function refreshAccessToken() {
+      const refreshToken = localStorage.getItem('spotify_refresh_token');
+      console.log('Refresh token:', refreshToken);
 
-    function refreshAccessToken(refreshToken) {
       const tokenUrl = 'https://accounts.spotify.com/api/token';
       const encodedCredentials = btoa(clientId + ':' + clientSecret);
 
@@ -206,11 +214,6 @@ button:hover {
           return newAccessToken;
         });
     }
-
-    const saveButton = document.querySelector('.save-button');
-    saveButton.addEventListener('click', () => {
-      alert('Guardar en Spotify - Funcionalidad pendiente de implementación');
-    });
   </script>
 </body>
 </html>
