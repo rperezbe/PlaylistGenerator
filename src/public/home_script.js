@@ -1,11 +1,10 @@
 const clientId = 'd7cdacc29b064ae5984e5ca69d5f42e9'; // ID de cliente
 const clientSecret = '567a2ba4f0c843faad2fdb94b7d375e9'; // clave de cliente
-const redirectUri = 'http://127.0.0.1:3000/PlaylistGenerator/src/public/callback.html'; // URL de redireccionamiento de nuestra aplicacion
+const redirectUri = 'http://127.0.0.1:5502/src/public/callback.html'; // URL de redireccionamiento de nuestra aplicacion
 const accessTokenKey = 'spotify_access_token'; // constante para almacenar el access token en el almacenamiento local
 const refreshTokenKey = 'spotify_refresh_token'; // constante para almacenar el refresh token en el almacenamiento local
 //const username = 'Robin'; // nombre usuario (lo obtendremos por sesion)
 //const genreSeeds = ['rock', 'pop', 'hip-hop', 'metal', 'jazz', 'reggaeton']; //prefencias musicales del usuario (lo obtendremos por sesion)
-
 
 
  //mostrar los datos del usuario en la página

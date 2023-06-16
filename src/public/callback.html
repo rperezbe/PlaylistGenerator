@@ -10,8 +10,9 @@ const accessTokenKey = 'spotify_access_token';
 const refreshTokenKey = 'spotify_refresh_token';
 //redirecciona a home
 function redirectToHome() {
-  const homeUrl = 'home.html';
-  window.location.href = homeUrl;
+  const user = JSON.parse(localStorage.getItem('user'));
+  //console.log(user);
+  window.location.href = 'home.html';
 }
 
 const queryParams = new URLSearchParams(window.location.search);
@@ -39,7 +40,7 @@ function requestAccessToken(code) {
   const tokenUrl = 'https://accounts.spotify.com/api/token';
   const clientId = 'd7cdacc29b064ae5984e5ca69d5f42e9';
   const clientSecret = '567a2ba4f0c843faad2fdb94b7d375e9';
-  const redirectUri = 'http://127.0.0.1:3000/PlaylistGenerator/src/public/callback.html';
+  const redirectUri = 'http://127.0.0.1:5502/src/public/callback.html';
   const scopes = 'user-read-private user-read-email playlist-modify-private playlist-modify-public user-top-read'; // permisos requeridos
 
   const authHeader = btoa(clientId + ':' + clientSecret);
