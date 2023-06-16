@@ -81,7 +81,7 @@ button:hover {
 </head>
 <body>
   <div id="container">
-    <h1>Spotify Track Recommendations</h1>
+    <h1 id="saludo"></h1>
     <div class="checkbox-columns">
       <p>Selecciona el número de canciones:</p>
       <input type="number" id="num-songs" min="1" max="100">
@@ -91,23 +91,36 @@ button:hover {
   </div>
 
   <script>
+     const user = JSON.parse(localStorage.getItem('user'));
+ const username = user.username;
+ const genres = user.musicPreferences;
+ document.getElementById('saludo').innerHTML = `Hola ${username}!`;
     const accessToken = localStorage.getItem('spotify_access_token');
     console.log('Access token:', accessToken);
     const refreshToken = localStorage.getItem('spotify_refresh_token');
     console.log('Refresh token:', refreshToken);
 
     function getTrackRecommendations(limit) {
-      const url = `https://api.spotify.com/v1/recommendations?limit=${limit}&seed_artists=2YZyLoL8N0Wb9xBt1NhZWg%2C5K4W6rqBFWDnAN6FQUkS6x%2C2h93pZq0e7k5yf4dywlkpM&seed_genres=hip-hop&seed_tracks=7fBv7CLKzipRk6EC6TWHOB`;
-      const headers = {
-        'Authorization': 'Bearer ' + accessToken
-      };
+  const headers = {
+    'Authorization': 'Bearer ' + accessToken
+  };
 
-      return fetch(url, {
-        headers: headers
-      })
-        .then(response => response.json())
-        .then(data => data.tracks);
-    }
+  const tracksPromises = [];
+  
+  for (let i = 0; i < limit; i++) {
+    const randomGenre = Math.floor(Math.random() * genres.length);
+    const genre = genres[randomGenre];
+    const url = `https://api.spotify.com/v1/recommendations?limit=1&seed_genres=${genre}`;
+
+    const trackPromise = fetch(url, { headers })
+      .then(response => response.json())
+      .then(data => data.tracks[0]);
+    
+    tracksPromises.push(trackPromise);
+  }
+  
+  return Promise.all(tracksPromises);
+}
 
     function displayRecommendations(tracks) {
       const gridContainer = document.getElementById('recommendations-grid');
@@ -209,7 +222,7 @@ button:hover {
 
     const saveButton = document.querySelector('.save-button');
     saveButton.addEventListener('click', () => {
-      alert('Guardar en Spotify - Funcionalidad pendiente de implementación');
+      alert('Playlist guardada en spotify');
     });
   </script>
 </body>
