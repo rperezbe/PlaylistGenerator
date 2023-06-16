@@ -11,7 +11,10 @@ router.get('/:id', userController.getUserById);
 //ruta para iniciar sesión
 router.post('/login', userController.loginUser);
 
-// Ruta para el logout
+//ruta para el logout
 router.post('/logout', userController.logoutUser);
+
+//ruta para obtener todos los usuarios
+router.get('/', userController.getAllUsers);
 
 module.exports = router;
