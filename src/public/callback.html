@@ -12,7 +12,7 @@ const refreshTokenKey = 'spotify_refresh_token';
 function redirectToHome() {
   const user = JSON.parse(localStorage.getItem('user'));
   //console.log(user);
-  window.location.href = 'home.html';
+  window.location.href = 'playlist.html';
 }
 
 const queryParams = new URLSearchParams(window.location.search);
