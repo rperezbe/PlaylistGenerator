@@ -91,91 +91,80 @@
   </div>
 
   <script>
-    const user = JSON.parse(localStorage.getItem('user'));
-    const username = user.username;
-    const genres = user.musicPreferences;
-    document.getElementById('saludo').innerHTML = `Hola ${username}!`;
+   const user = JSON.parse(localStorage.getItem('user'));
+const username = user.username;
+const genres = user.musicPreferences;
+document.getElementById('saludo').innerHTML = `Hola ${username}!`;
 
-    const accessToken = localStorage.getItem('spotify_access_token');
-    console.log('Access token:', accessToken);
-    const refreshToken = localStorage.getItem('spotify_refresh_token');
-    console.log('Refresh token:', refreshToken);
+const accessToken = localStorage.getItem('spotify_access_token');
+console.log('Access token:', accessToken);
+const refreshToken = localStorage.getItem('spotify_refresh_token');
+console.log('Refresh token:', refreshToken);
 
-    function getTrackRecommendations(limit) {
-      const headers = {
-        'Authorization': 'Bearer ' + accessToken
-      };
+function getTrackRecommendations(limit) {
+  const headers = {
+    'Authorization': 'Bearer ' + accessToken
+  };
 
-      const tracksPromises = [];
+  const tracksPromises = [];
 
-      for (let i = 0; i < limit; i++) {
-        const randomGenre = Math.floor(Math.random() * genres.length);
-        const genre = genres[randomGenre];
-        const url = `https://api.spotify.com/v1/recommendations?limit=1&seed_genres=${genre}`;
+  for (let i = 0; i < limit; i++) {
+    const randomGenre = Math.floor(Math.random() * genres.length);
+    const genre = genres[randomGenre];
+    const url = `https://api.spotify.com/v1/recommendations?limit=1&seed_genres=${genre}`;
 
-        const trackPromise = fetch(url, { headers })
-          .then(response => response.json())
-          .then(data => data.tracks[0]);
+    const trackPromise = fetch(url, { headers })
+      .then(response => response.json())
+      .then(data => data.tracks[0]);
 
-        tracksPromises.push(trackPromise);
-      }
+    tracksPromises.push(trackPromise);
+  }
 
-      return Promise.all(tracksPromises);
-    }
+  return Promise.all(tracksPromises);
+}
 
-    function displayRecommendations(tracks) {
-      const gridContainer = document.getElementById('recommendations-grid');
-      gridContainer.innerHTML = '';
+function displayRecommendations(tracks) {
+  const gridContainer = document.getElementById('recommendations-grid');
+  gridContainer.innerHTML = '';
 
-      const columns = getGridColumns(tracks.length);
-      gridContainer.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+  const columns = getGridColumns(tracks.length);
+  gridContainer.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
 
-      tracks.slice(0, 30).forEach(track => {
-        const gridItem = document.createElement('div');
-        gridItem.className = 'grid-item';
+  tracks.slice(0, 30).forEach(track => {
+    const gridItem = document.createElement('div');
+    gridItem.className = 'grid-item';
 
-        const iframe = document.createElement('iframe');
-        iframe.src = `https://open.spotify.com/embed/track/${track.id}`;
-        iframe.frameborder = '0';
-        iframe.allowtransparency = 'true';
-        iframe.allow = 'encrypted-media';
+    const iframe = document.createElement('iframe');
+    iframe.src = `https://open.spotify.com/embed/track/${track.id}`;
+    iframe.frameborder = '0';
+    iframe.allowtransparency = 'true';
+    iframe.allow = 'encrypted-media';
 
-        const trackName = document.createElement('p');
-        trackName.className = 'track-name';
-        trackName.textContent = track.name;
+    const trackName = document.createElement('p');
+    trackName.className = 'track-name';
+    trackName.textContent = track.name;
 
-        gridItem.appendChild(iframe);
-        gridItem.appendChild(trackName);
-        gridContainer.appendChild(gridItem);
-      });
-    }
+    gridItem.appendChild(iframe);
+    gridItem.appendChild(trackName);
+    gridContainer.appendChild(gridItem);
+  });
+}
 
-    function getGridColumns(numSongs) {
-      if (numSongs <= 10) {
-        return 5;
-      } else if (numSongs <= 20) {
-        return 7;
-      } else {
-        return 10;
-      }
-    }
+function getGridColumns(numSongs) {
+  if (numSongs <= 10) {
+    return 5;
+  } else if (numSongs <= 20) {
+    return 7;
+  } else {
+    return 10;
+  }
+}
 
-    const numSongsInput = document.getElementById('num-songs');
-    numSongsInput.addEventListener('change', () => {
-      const numSongs = parseInt(numSongsInput.value, 10);
-      if (numSongs > 0 && numSongs <= 100) {
-        getTrackRecommendations(numSongs)
-          .then(tracks => {
-            displayRecommendations(tracks);
-          })
-          .catch(error => {
-            console.error('Error getting track recommendations:', error);
-            refreshAccessToken(refreshToken);
-          });
-      }
-    });
-
-    getTrackRecommendations(10)
+const numSongsInput = document.getElementById('num-songs');
+numSongsInput.addEventListener('change', () => {
+  const numSongs = parseInt(numSongsInput.value, 10);
+  if (numSongs > 0 && numSongs <= 100) {
+    getTrackRecommendations(numSongs)
       .then(tracks => {
         displayRecommendations(tracks);
       })
@@ -183,47 +172,98 @@
         console.error('Error getting track recommendations:', error);
         refreshAccessToken(refreshToken);
       });
+  }
+});
 
-    const clientId = 'd7cdacc29b064ae5984e5ca69d5f42e9'; // Client ID
-    const clientSecret = '567a2ba4f0c843faad2fdb94b7d375e9'; // Client Secret
+getTrackRecommendations(10)
+  .then(tracks => {
+    displayRecommendations(tracks);
+  })
+  .catch(error => {
+    console.error('Error getting track recommendations:', error);
+    refreshAccessToken(refreshToken);
+  });
 
-    function refreshAccessToken(refreshToken) {
-      const tokenUrl = 'https://accounts.spotify.com/api/token';
-      const encodedCredentials = btoa(clientId + ':' + clientSecret);
+const clientId = 'd7cdacc29b064ae5984e5ca69d5f42e9'; // Client ID
+const clientSecret = '567a2ba4f0c843faad2fdb94b7d375e9'; // Client Secret
 
-      const data = {
-        grant_type: 'refresh_token',
-        refresh_token: refreshToken
-      };
+function refreshAccessToken(refreshToken) {
+  const tokenUrl = 'https://accounts.spotify.com/api/token';
+  const encodedCredentials = btoa(clientId + ':' + clientSecret);
 
-      const headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': 'Basic ' + encodedCredentials
-      };
+  const data = {
+    grant_type: 'refresh_token',
+    refresh_token: refreshToken
+  };
 
-      return fetch(tokenUrl, {
-        method: 'POST',
-        headers: headers,
-        body: new URLSearchParams(data)
-      })
-        .then(response => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            throw new Error('Failed to refresh access token');
-          }
-        })
-        .then(data => {
-          const newAccessToken = data.access_token;
-          localStorage.setItem('spotify_access_token', newAccessToken);
-          return newAccessToken;
-        });
-    }
+  const headers = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Authorization': 'Basic ' + encodedCredentials
+  };
 
-    const saveButton = document.querySelector('.save-button');
-    saveButton.addEventListener('click', () => {
-      alert('Playlist guardada en Spotify');
+  return fetch(tokenUrl, {
+    method: 'POST',
+    headers: headers,
+    body: new URLSearchParams(data)
+  })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Failed to refresh access token');
+      }
+    })
+    .then(data => {
+      const newAccessToken = data.access_token;
+      localStorage.setItem('spotify_access_token', newAccessToken);
+      return newAccessToken;
     });
+}
+function fetchAccessToken() {
+  const tokenUrl = 'https://accounts.spotify.com/api/token';
+  const encodedCredentials = btoa(clientId + ':' + clientSecret);
+
+  const data = {
+    grant_type: 'client_credentials'
+  };
+
+  const headers = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Authorization': 'Basic ' + encodedCredentials
+  };
+
+  return fetch(tokenUrl, {
+    method: 'POST',
+    headers: headers,
+    body: new URLSearchParams(data)
+  })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Failed to fetch access token');
+      }
+    })
+    .then(data => {
+      accessToken = data.access_token;
+      localStorage.setItem('spotify_access_token', accessToken);
+      console.log('Access token:', accessToken);
+    });
+}
+
+function saveRecommendationsToPlaylist() {
+  const tracks = JSON.parse(localStorage.getItem('spotify_recommendations'));
+  window.location.href = `playlist.html?tracks=${encodeURIComponent(JSON.stringify(tracks))}`;
+}
+
+const saveButton = document.querySelector('.save-button');
+saveButton.addEventListener('click', saveRecommendationsToPlaylist);
+
+if (!accessToken) {
+  fetchAccessToken();
+} else if (!refreshToken) {
+  fetchAccessToken();
+}
   </script>
 </body>
 </html>
