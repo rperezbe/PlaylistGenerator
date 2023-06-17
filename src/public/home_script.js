@@ -111,7 +111,7 @@ function generatePlaylists(userId) {
       const songPromises = genreSeeds.map(genre => getSongsByGenre(genre));
       Promise.all(songPromises)
         .then(songsByGenre => {
-          const tracks = songsByGenre.flatMap(songs => songs.slice(0, 2));
+          const tracks = songsByGenre.flatMap(songs => songs.slice(0, 2)); //
           addTracksToPlaylist(playlistId, tracks)
             .then(() => {
               console.log('Playlist created and songs added');
