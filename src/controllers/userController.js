@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 
+//creamos un nuevo usuario
 const createUser = (req, res) => {
   const newUser = new User({
     username: req.body.username,
@@ -55,7 +56,7 @@ const createUser = (req, res) => {
     });
 };
 
-
+//obtener un usuario por id (solo puedes consultar tu mismo usuario con el que te has logeado)
 const getUserById = (req, res) => {
   const userId = req.params.id;
 
@@ -81,7 +82,7 @@ const getUserById = (req, res) => {
   }
 };
 
-
+//logear usuarios
 const loginUser = (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
@@ -114,6 +115,7 @@ const loginUser = (req, res) => {
     });
 };
 
+//cerrar sesión de usuarios
 const logoutUser = (req, res) => {
   req.session.destroy((err) => {
     if (err) {
@@ -125,10 +127,50 @@ const logoutUser = (req, res) => {
   });
 };
 
+//update de valores del usuario
+
+//delete de usuario (solamente si eres admin)
+const deleteUser = (req, res) => {
+  if (req.session.user && req.session.user.isAdmin) {
+    const userId = req.params.id;
+    User.findByIdAndRemove(userId)
+      .then((user) => {
+        if (user) {
+          res.status(200).json({ message: 'Usuario eliminado correctamente' });
+        } else {
+          res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+      })
+      .catch((err) => {
+        console.error('Error al eliminar el usuario:', err);
+        res.status(500).json({ error: 'Error al eliminar el usuario' });
+      });
+  } else {
+    res.status(401).json({ error: 'Acceso no autorizado' });
+  }
+};
+
+//mostramos todos los usuarios (solamente si eres admin)
+const getAllUsers = (req, res) => {
+  if (req.session.user && req.session.user.isAdmin) {
+    User.find()
+      .then((users) => {
+        res.status(200).json(users);
+      })
+      .catch((err) => {
+        console.error('Error al obtener todos los usuarios:', err);
+        res.status(500).json({ error: 'Error al obtener los usuarios' });
+      });
+  } else {
+    res.status(401).json({ error: 'Acceso no autorizado' });
+  }
+};
 
 module.exports = {
   createUser,
   getUserById,
   loginUser,
-  logoutUser
+  logoutUser,
+  getAllUsers,
+  deleteUser
 };

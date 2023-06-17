@@ -78,7 +78,7 @@ function handleTokenExpiration() {
     getUserId(accessToken)
       .then(userId => {
         console.log('User ID:', userId);
-        generatePlaylists(userId);
+      //  generatePlaylists(userId);
       })
       .catch(error => {
         console.error('Error getting user ID:', error);
@@ -86,7 +86,7 @@ function handleTokenExpiration() {
           refreshAccessToken(refreshToken)
             .then(newAccessToken => {
               console.log('Access token refreshed:', newAccessToken);
-              generatePlaylists(userId);
+          //    generatePlaylists(userId);
             })
             .catch(error => {
               console.error('Error refreshing access token:', error);
@@ -167,7 +167,7 @@ function createPlaylist(userId) {
 
 // Funcion para obtener 2 canciones por genero
 function getSongsByGenre(genre) {
-  const url = `https://api.spotify.com/v1/recommendations?limit=2&seed_genres=${genre}`;
+  const url = `https://api.spotify.com/v1/recommendations?limit=1&seed_genres=${genre}`;
   const headers = {
     'Authorization': 'Bearer ' + getAccessToken()
   };
