@@ -1,12 +1,10 @@
 <head>
   <title>PlaylistGenerator - Home</title>
-  <script src="menu.html" type="text/html"></script>
   <style>
     * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;}
 
     body {
       background-color: #96BC33;
@@ -30,8 +28,30 @@
       margin-bottom: 20px;
     }
 
+    .checkbox-columns {
+      margin-bottom: 20px;
+    }
+
+    .checkbox-columns p {
+      margin-bottom: 10px;
+    }
+
+    .checkbox-columns input {
+      width: 100px;
+      padding: 5px;
+      margin-right: 10px;
+    }
+
     .grid-container {
       display: grid;
+      grid-gap: 10px;
+      justify-items: center;
+      align-items: center;
+    }
+
+    .grid-page {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
       grid-gap: 10px;
       justify-items: center;
       align-items: center;
@@ -63,7 +83,12 @@
       text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
     }
 
-    button {
+    #logo {
+      margin-bottom: 20px;
+      width: 250px;
+    }
+
+    .save-button {
       background-color: #96BC33;
       color: #fff;
       padding: 10px 20px;
@@ -71,14 +96,14 @@
       border-radius: 4px;
       font-size: 16px;
       cursor: pointer;
-      margin-bottom: 10px;
-      align-self: center;
+      margin-bottom: 20px;
     }
 
-    button:hover {
+    .save-button:hover {
       background-color: #4caf50;
     }
   </style>
+   <link rel="stylesheet" href="menu.css">
     <script>
       // Verificar la existencia de la sesión en el almacenamiento local
       if (!localStorage.getItem('user')) {
@@ -87,7 +112,9 @@
       }
     </script>
 </head>
+<div id="menuContainer"></div>
 <body>
+  <img id="logo" src="logo.jpg" alt="logo">
   <div id="container">
     <h1 id="saludo"></h1>
     <div class="checkbox-columns">
@@ -95,6 +122,7 @@
       <input type="number" id="num-songs" min="1" max="100">
     </div>
     <div class="grid-container" id="recommendations-grid"></div>
+    <div id="paginationContainer"></div>
     <button class="save-button">Guardar en Spotify</button>
   </div>
 
@@ -149,17 +177,44 @@ function getTrackRecommendations(limit) {
 
   return Promise.all(tracksPromises);
 }
-
+const gridContainer = document.getElementById('recommendations-grid');
+const paginationContainer = document.getElementById('paginationContainer');
+const numSongsInput = document.getElementById('num-songs');
 // Muestra las recomendaciones de canciones
+let currentPage = 0;
+const pageSize = 10;
+
 function displayRecommendations(tracks) {
-  localStorage.setItem('playlist_tracks',JSON.stringify(tracks));
-  const gridContainer = document.getElementById('recommendations-grid');
+  localStorage.setItem('playlist_tracks', JSON.stringify(tracks));
   gridContainer.innerHTML = '';
 
-  const columns = getGridColumns(tracks.length);
-  gridContainer.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+  const numPages = Math.ceil(tracks.length / pageSize);
 
-  tracks.slice(0, 30).forEach(track => {
+  if (numPages > 1) {
+    const previousButton = document.createElement('button');
+    previousButton.textContent = 'Anterior';
+    previousButton.addEventListener('click', showPreviousPage);
+
+    const nextButton = document.createElement('button');
+    nextButton.textContent = 'Siguiente';
+    nextButton.addEventListener('click', showNextPage);
+
+    const navigationContainer = document.createElement('div');
+    navigationContainer.className = 'navigation-container';
+    navigationContainer.appendChild(previousButton);
+    navigationContainer.appendChild(nextButton);
+
+    gridContainer.appendChild(navigationContainer);
+  }
+
+  const start = currentPage * pageSize;
+  const end = start + pageSize;
+  const pageTracks = tracks.slice(start, end);
+
+  const grid = document.createElement('div');
+  grid.className = 'grid-page';
+
+  pageTracks.forEach(track => {
     const gridItem = document.createElement('div');
     gridItem.className = 'grid-item';
 
@@ -175,23 +230,29 @@ function displayRecommendations(tracks) {
 
     gridItem.appendChild(iframe);
     gridItem.appendChild(trackName);
-    gridContainer.appendChild(gridItem);
+    grid.appendChild(gridItem);
   });
+
+  gridContainer.appendChild(grid);
 }
 
-// Modifica el tamaño del grid dependiendo de la cantidad de canciones
-function getGridColumns(numSongs) {
-  if (numSongs <= 10) {
-    return 5;
-  } else if (numSongs <= 20) {
-    return 7;
-  } else {
-    return 10;
+function showPreviousPage() {
+  if (currentPage > 0) {
+    currentPage--;
+    displayRecommendations(JSON.parse(localStorage.getItem('playlist_tracks')));
   }
 }
 
+function showNextPage() {
+  const tracks = JSON.parse(localStorage.getItem('playlist_tracks'));
+  const numPages = Math.ceil(tracks.length / pageSize);
+
+  if (currentPage < numPages - 1) {
+    currentPage++;
+    displayRecommendations(tracks);
+  }
+}
 // Listener para el input de la cantidad de canciones
-const numSongsInput = document.getElementById('num-songs');
 numSongsInput.addEventListener('change', () => {
   const numSongs = parseInt(numSongsInput.value, 10);
   if (numSongs > 0 && numSongs <= 100) {
@@ -323,5 +384,6 @@ function checkTokens() {
 // Comprueba los tokens
 checkTokens();
   </script>
+<script src="menu.js"></script>
 </body>
 </html>

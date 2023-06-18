@@ -4,8 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Playlist Generada</title>
-  <script src="menu.html" type="text/html"></script>
+  <title>PlaylistGenerator - Playlist</title>
   <style>
     * {
       box-sizing: border-box;
@@ -29,6 +28,10 @@
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
       text-align: center;
     }
+    #logo {
+  margin-bottom: 20px;
+  width: 250px;
+}
 
     h1 {
       font-size: 24px;
@@ -84,13 +87,22 @@
       background-color: #4caf50;
     }
   </style>
+     <link rel="stylesheet" href="menu.css">
+     <script>
+       // Verificar la existencia de la sesión en el almacenamiento local
+       if (!localStorage.getItem('user')) {
+         // No hay sesión o falta información, redirigir a la página de inicio de sesión
+         window.location.href = 'index.html';
+       }
+     </script>
 </head>
 <body>
+  <img id="logo" src="logo.jpg" alt="logo">
+  <div id="menuContainer"></div>
   <div id="container">
-    <h1>Playlist</h1>
+    <h1>Playlist Generada</h1>
     <div class="grid-container" id="playlist-container"></div>
   </div>
-
   <script>
 const clientId = 'd7cdacc29b064ae5984e5ca69d5f42e9'; // ID de cliente
 const clientSecret = '567a2ba4f0c843faad2fdb94b7d375e9'; // clave de cliente
@@ -353,5 +365,6 @@ if (window.location.href.startsWith(redirectUri)) {
   handleTokenExpiration();
 }
   </script>
+  <script src="menu.js"></script>
 </body>
 </html>
