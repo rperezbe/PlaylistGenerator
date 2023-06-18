@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Playlists Generadas</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #96BC33;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    #container {
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    #logo {
+      margin-bottom: 20px;
+      width: 250px;
+    }
+
+    .playlist-item {
+      margin-bottom: 10px;
+    }
+
+    .playlist-item p {
+      margin-bottom: 5px;
+    }
+
+    .playlist-item iframe {
+      border: none;
+    }
+    button {
+  background-color: #96BC33;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+button:hover {
+  background-color: #4caf50;
+}
+  </style>
+  <script>
+    // Verificar la existencia de la sesión en el almacenamiento local
+    if (!localStorage.getItem('user')) {
+      // No hay sesión o falta información, redirigir a la página de inicio de sesión
+      window.location.href = 'index.html';
+    }
+  </script>
+</head>
+<body>
+<img id="logo" src="logo.jpg" alt="logo">
+  <div id="container">
+    <h1 id="saludo"></h1>
+    <h1>Playlists Generadas</h1>
+    <div id="playlists"></div>
+    <button id="refresh_button">Recargar token</button>
+    <button id="logoutBtn">Logout</button>
+  </div>
+  <script>
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+
+    function logout() {
+      // Realizar una solicitud POST a la función /logout en el backend
+      fetch('http://localhost:3000/users/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response => {
+            // Borrar la información de la sesión en localStorage
+            localStorage.removeItem('user');
+            // Redireccionar a la página de inicio de sesión u otra página después del logout exitoso
+            window.location.href = 'index.html';
+        })
+        .catch(error => {
+          console.error('Error al realizar el logout:', error);
+        });
+    }
+  </script>
+  <script src="home_script.js"></script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Playlists Generadas</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #96BC33;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    #container {
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    #logo {
+      margin-bottom: 20px;
+      width: 250px;
+    }
+
+    .playlist-item {
+      margin-bottom: 10px;
+    }
+
+    .playlist-item p {
+      margin-bottom: 5px;
+    }
+
+    .playlist-item iframe {
+      border: none;
+    }
+    button {
+  background-color: #96BC33;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+button:hover {
+  background-color: #4caf50;
+}
+  </style>
+  <script>
+    // Verificar la existencia de la sesión en el almacenamiento local
+    if (!localStorage.getItem('user')) {
+      // No hay sesión o falta información, redirigir a la página de inicio de sesión
+      window.location.href = 'index.html';
+    }
+  </script>
+</head>
+<body>
+<img id="logo" src="logo.jpg" alt="logo">
+  <div id="container">
+    <h1 id="saludo"></h1>
+    <h1>Playlists Generadas</h1>
+    <div id="playlists"></div>
+    <button id="refresh_button">Recargar token</button>
+    <button id="logoutBtn">Logout</button>
+  </div>
+  <script>
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+
+    function logout() {
+      // Realizar una solicitud POST a la función /logout en el backend
+      fetch('http://localhost:3000/users/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response => {
+            // Borrar la información de la sesión en localStorage
+            localStorage.removeItem('user');
+            // Redireccionar a la página de inicio de sesión u otra página después del logout exitoso
+            window.location.href = 'index.html';
+        })
+        .catch(error => {
+          console.error('Error al realizar el logout:', error);
+        });
+    }
+  </script>
+</body>
+</html>
+
