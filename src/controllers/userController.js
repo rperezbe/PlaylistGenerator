@@ -128,6 +128,49 @@ const logoutUser = (req, res) => {
 };
 
 //update de valores del usuario
+const updateUser = (req, res) => {
+  const userId = req.params.id;
+  const updatedData = req.body;
+  //verificar si se ha proporcionado una nueva contraseña
+  if (updatedData.password) {
+    //encriptar la nueva contraseña
+    bcrypt.hash(updatedData.password, 10)
+      .then((hash) => {
+        updatedData.password = hash;
+        //actualizar los datos del usuario
+        User.findByIdAndUpdate(userId, updatedData, { new: true })
+          .then((user) => {
+            if (user) {
+              res.status(200).json({ message: 'Datos de usuario actualizados correctamente', user});
+            } else {
+              res.status(404).json({ error: 'Usuario no encontrado' });
+            }
+          })
+          .catch((err) => {
+            console.error('Error al actualizar los datos del usuario:', err);
+            res.status(500).json({ error: 'Error al actualizar los datos del usuario' });
+          });
+      })
+      .catch((err) => {
+        console.error('Error al generar el hash de la contraseña:', err);
+        res.status(500).json({ error: 'Error al actualizar los datos del usuario' });
+      });
+  } else {
+    // No se ha proporcionado una nueva contraseña, actualizar los demás datos
+    User.findByIdAndUpdate(userId, updatedData, { new: true })
+      .then((user) => {
+        if (user) {
+          res.status(200).json({ message: 'Datos de usuario actualizados correctamente',user });
+        } else {
+          res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+      })
+      .catch((err) => {
+        console.error('Error al actualizar los datos del usuario:', err);
+        res.status(500).json({ error: 'Error al actualizar los datos del usuario' });
+      });
+  }
+};
 
 //delete de usuario (solamente si eres admin)
 const deleteUser = (req, res) => {
@@ -172,5 +215,6 @@ module.exports = {
   loginUser,
   logoutUser,
   getAllUsers,
-  deleteUser
+  deleteUser,
+  updateUser
 };

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>PlaylistGenerator</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    // Verificar la existencia de la sesión en el almacenamiento local
+    if (!localStorage.getItem('user')) {
+      // No hay sesión o falta información, redirigir a la página de inicio de sesión
+      window.location.href = 'index.html';
+    }
+  </script>
+</head>
+
+<body>
+    <div id="update">
+      <h2>Perfil de usuario</h2>
+      <input type="text" id="new-username" placeholder="Nombre de usuario">
+      <input type="text" id="email" placeholder="Correo electrónico">
+      <input type="text" id="age" placeholder="Edad">
+      <p>Preferencias musicales:</p>
+      <div class="checkbox-columns">
+        <div>
+          <label><input type="checkbox" name="musicPreferences" value="rock"> Rock</label>
+          <label><input type="checkbox" name="musicPreferences" value="pop"> Pop</label>
+          <label><input type="checkbox" name="musicPreferences" value="hip-hop"> Hip-hop</label>
+          <label><input type="checkbox" name="musicPreferences" value="metal"> Metal</label>
+          <label><input type="checkbox" name="musicPreferences" value="electronic"> Electrónica</label>
+        </div>
+        <div>
+          <label><input type="checkbox" name="musicPreferences" value="reggaeton"> Reggaeton</label>
+          <label><input type="checkbox" name="musicPreferences" value="jazz"> Jazz</label>
+          <label><input type="checkbox" name="musicPreferences" value="country"> Country</label>
+          <label><input type="checkbox" name="musicPreferences" value="indie"> Indie</label>
+          <label><input type="checkbox" name="musicPreferences" value="folk"> Folk</label>
+        </div>
+        <div>
+          <label><input type="checkbox" name="musicPreferences" value="blues"> Blues</label>
+          <label><input type="checkbox" name="musicPreferences" value="soul"> Soul</label>
+          <label><input type="checkbox" name="musicPreferences" value="funk"> Funk</label>
+          <label><input type="checkbox" name="musicPreferences" value="disco"> Disco</label>
+          <label><input type="checkbox" name="musicPreferences" value="classical"> Clásica</label>
+        </div>
+        <div>
+          <label><input type="checkbox" name="musicPreferences" value="reggae"> Reggae</label>
+          <label><input type="checkbox" name="musicPreferences" value="punk"> Punk</label>
+          <label><input type="checkbox" name="musicPreferences" value="alternative"> Alternativa</label>
+          <label><input type="checkbox" name="musicPreferences" value="r-n-b"> R&B</label>
+          <!-- Add more genres here -->
+        </div>
+      </div>
+      <button id="toggle-password-btn" onclick="togglePasswordFields()">Cambiar contraseña</button>
+      <div id="password-fields" style="display: none;">
+        <input type="password" id="new-password" placeholder="Nueva contraseña">
+        <input type="password" id="confirm-password" placeholder="Confirmar contraseña">
+      </div>
+      <button onclick="update()">Actualizar datos</button>
+    </div>
+  </div>
+  <script>
+    //obtenemos el usuario actual de localStorage
+    const user = JSON.parse(localStorage.getItem('user'));
+    document.getElementById("new-username").value = user.username;
+    document.getElementById("email").value = user.email;
+    document.getElementById("age").value = user.age;
+
+    // Marcar las preferencias musicales
+    const musicPreferences = user.musicPreferences;
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach((checkbox) => {
+      if (musicPreferences.includes(checkbox.value)) {
+        checkbox.checked = true;
+      }
+    });
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>

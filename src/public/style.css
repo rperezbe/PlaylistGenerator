@@ -25,7 +25,8 @@ body {
 }
 
 #login,
-#registro {
+#registro,
+#update {
   background-color: #fff;
   border-radius: 8px;
   padding: 20px;

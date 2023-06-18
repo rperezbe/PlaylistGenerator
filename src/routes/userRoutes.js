@@ -14,10 +14,15 @@ router.get('/:id', userController.getUserById);
 // Ruta para eliminar un usuario (solamente si eres admin)
 router.delete('/:id', userController.deleteUser);
 
+//ruta para actualizar los datos de un usuario
+router.put('/:id', userController.updateUser);
+
 //ruta para iniciar sesión
 router.post('/login', userController.loginUser);
 
 //ruta para el logout
 router.post('/logout', userController.logoutUser);
+
+
 
 module.exports = router;
