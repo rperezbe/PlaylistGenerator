@@ -16,12 +16,12 @@
     }
 
     #container {
-      background-color: #fff;
-      border-radius: 8px;
-      padding: 20px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-      text-align: center;
-    }
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    text-align: center;
+  }
 
     h1 {
       font-size: 24px;
@@ -51,7 +51,7 @@
 
     .grid-page {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       grid-gap: 10px;
       justify-items: center;
       align-items: center;
@@ -102,6 +102,66 @@
     .save-button:hover {
       background-color: #4caf50;
     }
+
+    button {
+      background-color: #96BC33;
+      color: #fff;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      margin-right: 10px;
+    }
+
+    button:hover {
+      background-color: #4caf50;
+    }
+
+    /* Estilos para pantallas de iPhone */
+    @media screen and (max-width: 767px) {
+      body {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      #logo {
+        margin-bottom: 20px;
+        margin-top: 700px;
+      }
+      .grid-page {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* Estilos para pantallas de iPad */
+    @media screen and (min-width: 768px) and (max-width: 999px) {
+      body {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      #logo {
+        margin-bottom: 20px;
+        margin-top: 420px;
+      }
+      .grid-page {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* Estilos para pantallas más grandes (monitores generales) */
+    @media screen and (min-width: 1000px) {
+      #update {
+        width: 40%; 
+      }
+      body{
+        margin-top: 85px;
+        margin-bottom: 85px;
+      }
+    }
+
   </style>
    <link rel="stylesheet" href="menu.css">
     <script>
@@ -182,29 +242,30 @@ const paginationContainer = document.getElementById('paginationContainer');
 const numSongsInput = document.getElementById('num-songs');
 // Muestra las recomendaciones de canciones
 let currentPage = 0;
-const pageSize = 10;
+const pageSize = 8;
 
 function displayRecommendations(tracks) {
   localStorage.setItem('playlist_tracks', JSON.stringify(tracks));
   gridContainer.innerHTML = '';
+  paginationContainer.innerHTML = '';
 
   const numPages = Math.ceil(tracks.length / pageSize);
 
   if (numPages > 1) {
     const previousButton = document.createElement('button');
     previousButton.textContent = 'Anterior';
+    previousButton.id = 'previous-button';
     previousButton.addEventListener('click', showPreviousPage);
 
     const nextButton = document.createElement('button');
     nextButton.textContent = 'Siguiente';
+    previousButton.id = 'next-button';
     nextButton.addEventListener('click', showNextPage);
 
-    const navigationContainer = document.createElement('div');
-    navigationContainer.className = 'navigation-container';
-    navigationContainer.appendChild(previousButton);
-    navigationContainer.appendChild(nextButton);
+    paginationContainer.appendChild(previousButton);
+    paginationContainer.appendChild(nextButton);
 
-    gridContainer.appendChild(navigationContainer);
+
   }
 
   const start = currentPage * pageSize;
