@@ -4,12 +4,12 @@ PlaylistGenerator es una aplicación que te permite generar listas de reproducci
 ## Funcionalidades
 
 # Crea tu playlist
-Crea tu playlist indicando el número de canciones por el que quieres que esté compuesta, y será generada en base a tus preferencias musicales especificadas.
+Personaliza tu propia playlist indicando el número de canciones que deseas que tenga y será generada según tus preferencias musicales.
 
 https://github.com/rperezbe/PlaylistGenerator/assets/48314354/8158c9e7-39fb-4222-a6ad-6efc9d6f22bc
 
 # Almacena tu playlist
-Una vez hayas decidido si te gusta la playlist que se te ha generado, podrás guardarla en tu cuenta de Spotify.
+Después de que hayas decidido si te gusta la playlist generada, tendrás la opción de guardarla en tu cuenta de Spotify.
 
 https://github.com/rperezbe/PlaylistGenerator/assets/48314354/d265a295-d39d-4778-92b0-ca79e6d018c7
 
